@@ -1,0 +1,143 @@
+<section class="section">
+    <div class="container
+        content
+        contact-form
+        contact-form--center"
+        >
+            <style>
+                body {
+                  margin: 0;
+                  padding: 0;
+                  background-color: #FFFFFF; /* White background */
+                  font-family: Arial, sans-serif;
+                  color: #000000;           /* Black text */
+                }
+              
+                .contact-container {
+                  width: 600px;
+                  margin: 40px auto;
+                  padding: 20px;
+                }
+              
+                .contact-container h1 {
+                  margin-bottom: 20px;
+                }
+              
+                .form-group {
+                  margin-bottom: 15px;
+                }
+              
+                label {
+                  display: block;
+                  margin-bottom: 5px;
+                  font-weight: bold;
+                }
+              
+                input[type="text"],
+                input[type="email"],
+                select,
+                textarea {
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #ccc;
+                  box-sizing: border-box;
+                  font-size: 16px;
+                }
+              
+                /* Make the submit button stand out */
+                button[type="submit"] {
+                  color: black;
+                    width: 100%;
+                  background: 
+                  border: none;
+                  padding: 12px 20px;
+                  font-size: 16px;
+                  cursor: pointer;
+                  text-transform: uppercase;
+                }
+              
+                button[type="submit"]:hover {
+                  opacity: 0.9;
+                }
+              
+                /* Optional: asterisk for required fields */
+                .required::after {
+                  content: " *";
+                  color: red;
+                }
+              </style>
+              
+              <div class="contact-container">
+                <h1>Contact</h1>
+                <form id="cust-contact" action="javascript:;" onsubmit='submitForm(this)'>
+                  <div style="display:none" class="contact__form-success">
+                    <p class="quote">
+                      Thanks for contacting us. We'll get back to you as soon as possible.
+                    </p>
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="required" for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your name">
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="required" for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Your email">
+                  </div>
+              
+                  <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject" name="subject">
+                      <option value="30">General Inquiry</option>
+                      <option value="30">Artist Relations</option>
+                    </select>
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="required" for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required placeholder="Your message"></textarea>
+                  </div>
+              
+                  <div class="form-group">
+                    <button type="submit" class="btn">Send</button>
+                  </div>
+                </form>
+              </div>
+              
+              <script defer>
+                function submitForm(form) {
+                  // Get form data as key-value pairs using FormData
+                  const data = Object.fromEntries(new FormData(form));
+              
+                  // Extract values by input names (NOT by array indices)
+                  const name = data.name;
+                  const email = data.email;
+                  const subject = data.subject;  // Matches select name="subject"
+                  const text = data.message;     // Matches textarea name="message"
+              
+                  console.log('Submitting:', { name, email, subject, text });
+              
+                  let xhr = new XMLHttpRequest();
+                  xhr.open("POST", "https://support.wgsusa.com/contact_osticket/ticket", true);
+                  xhr.setRequestHeader('Content-Type', 'application/json');
+                  xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                      if (xhr.responseText == "completed") {
+                        document.querySelector(".contact__form-success").style.display = "block";
+                        form.reset();
+                      }
+                    }
+                  }
+                  xhr.send(JSON.stringify({
+                    name: name,
+                    email: email,
+                    topicId: subject,  // Changed from 'subject' to match API expectation
+                    message: text,
+                    store: "Jupiter Support"
+                  }));
+                }
+              </script>
+              
+    </div>
+</section>
